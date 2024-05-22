@@ -1,4 +1,4 @@
-# WVNet: A SAR Wave-mode Foundation Model
+# WV-Net: A SAR Wave-mode Foundation Model
 
 __Repository accompanying AGU presentation IN54B-03__
 
