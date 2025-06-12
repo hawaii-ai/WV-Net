@@ -1,0 +1,35 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=67.7.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wvnet"
+version = "0.1.0"
+description = "Code and models for the WVNet research paper."
+readme = "README.md"
+authors = [{ name = "Yannik Glaser" }]
+license = { file = "LICENSE" }
+keywords = ["deep learning", "research", "model", "paper"]
+
+# Core dependencies needed for your `wvnet` package to run (e.g., for inference)
+dependencies = ["torch>=2.0", "torchvision>=0.20", "numpy", "pandas"]
+
+classifiers = [
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'License :: OSI Approved :: MIT License',
+    'Operating System :: OS Independent',
+    'Intended Audience :: Science/Research',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    'Topic :: Scientific/Engineering :: Oceanography',
+    'Development Status :: 4 - Beta',
+    'Operating System :: POSIX :: Linux',
+]
+
+requires-python = ">=3.10"
+
+# Configuration for setuptools (the build backend)
+[tool.setuptools]
+packages = ["wvnet"]
