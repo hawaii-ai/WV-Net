@@ -1,6 +1,6 @@
 # WV-Net: A SAR Wave-mode Foundation Model
 This repository contains the code and model weights accompanying AIES manuscript AIES-D-25-0003 and AGU presentation IN54B-03:
-"[WV-Net: A SAR Wave-mode Foundation Model](Link to your paper on arXiv/Journal)".
+"[WV-Net: A SAR Wave-mode Foundation Model](https://arxiv.org/abs/2406.18765)".
 
 ## Features:
 -   **Pre-trained Model Weights:** Easily download and use our trained WV-Net model.
