@@ -3,7 +3,7 @@ from torch import nn
 from torchvision.models import resnet50
 
 
-def load_from_weights(weights_path: str, eval_mode:bool = True) -> nn.Module:
+def load_from_weights(weights_path: str, eval_mode: bool = True) -> nn.Module:
     """
     Loads the WV-Net model
 
@@ -15,15 +15,16 @@ def load_from_weights(weights_path: str, eval_mode:bool = True) -> nn.Module:
         nn.Module: Loaded model
     """
     model = resnet50(weights=None)
+    model.fc = nn.Identity()
+
     model.load_state_dict(
         torch.load(
             weights_path,
-            map_location='cpu',
+            map_location="cpu",
             weights_only=True,
         ),
-        strict=False
+        strict=True,
     )
-    model.fc = nn.Identity()
 
     if eval_mode:
         model.eval()
