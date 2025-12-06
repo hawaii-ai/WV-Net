@@ -54,13 +54,19 @@ class ImagePreprocessor(nn.Module):
         h_diff = max(0, self.image_size[0] - im.size(dim=-2))
         w_diff = max(0, self.image_size[1] - im.size(dim=-1))
         im = v2.Pad(
-            padding=(0, w_diff, 0, h_diff), padding_mode='constant', fill=0.0
+            padding=(0, w_diff, 0, h_diff), padding_mode="constant", fill=0.0
         )(im)
         im = v2.CenterCrop(self.image_size)(im)
         im = v2.ToDtype(torch.float32, scale=True)(im)
 
         # More involved than v2.Resize because original code used kornia with align_corners option set
-        im = torch.nn.functional.interpolate(torch.unsqueeze(im, 0), self.out_size, antialias=False, mode='bilinear', align_corners=True)
+        im = torch.nn.functional.interpolate(
+            torch.unsqueeze(im, 0),
+            self.out_size,
+            antialias=False,
+            mode="bilinear",
+            align_corners=True,
+        )
         im = torch.squeeze(im, 0)
 
         im = im.repeat(3, 1, 1)
@@ -74,7 +80,12 @@ class BaseDataset(torch.utils.data.Dataset):
     Base class for dataset
     """
 
-    def __init__(self, data_src: str, image_parent:str | None = None, transform: torch.nn.Module | None = None):
+    def __init__(
+        self,
+        data_src: str,
+        image_parent: str | None = None,
+        transform: torch.nn.Module | None = None,
+    ):
         """
         Args:
             data_src (any): Source of the data, varies for different generators
@@ -100,9 +111,9 @@ class BaseDataset(torch.utils.data.Dataset):
             tuple[np.array, int]: Tuple containing the image and its index in the dataframe
         """
         row = self.df.iloc[index]
-        img_file = row['filename']
+        img_file = row["filename"]
         img_file = os.path.join(self.image_parent, img_file)
-        img = Image.open(img_file).convert('L')
+        img = Image.open(img_file).convert("L")
 
         if self.transform:
             img = self.transform(img)
@@ -154,7 +165,7 @@ class JSONDataset(BaseDataset):
         Returns:
             pd.DataFrame: DataFrame containing the data
         """
-        with open(data_src, 'r') as f:
+        with open(data_src, "r") as f:
             data = json.load(f)
         df = pd.DataFrame(data)
 
@@ -175,25 +186,27 @@ class SimpleDataset(BaseDataset):
         Returns:
             pd.DataFrame: DataFrame containing the data
         """
-        df = pd.DataFrame(data_src, columns=['filename'])
+        df = pd.DataFrame(data_src, columns=["filename"])
 
         return df
 
 
-def init_dataset(source: str, image_parent: str, transform: torch.nn.Module):
+def init_dataset(
+    source: str | list, image_parent: str, transform: torch.nn.Module
+):
     if isinstance(source, str):
-        extension = source.split('.')[-1]
-        if extension == 'csv':
+        extension = source.split(".")[-1]
+        if extension == "csv":
             dataset = CSVDataset(source, image_parent, transform)
-        elif extension == 'json':
+        elif extension == "json":
             dataset = JSONDataset(source, image_parent, transform)
         else:
-            raise ValueError(f'Unsupported file format: {extension}')
+            raise ValueError(f"Unsupported file format: {extension}")
 
     elif isinstance(source, list):
         dataset = SimpleDataset(source, image_parent, transform)
 
     else:
-        raise ValueError(f'Unsupported data source: {source}')
+        raise ValueError(f"Unsupported data source: {source}")
 
     return dataset
