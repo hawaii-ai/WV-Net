@@ -51,11 +51,12 @@ class ImagePreprocessor(nn.Module):
         )
         im = load_transforms(x)
 
-        h_diff = max(0, self.image_size[0] - im.size(dim=-2))
-        w_diff = max(0, self.image_size[1] - im.size(dim=-1))
-        im = v2.Pad(
-            padding=(0, w_diff, 0, h_diff), padding_mode="constant", fill=0.0
-        )(im)
+        # Note: this is technically an error but the training implementation had this bug so to ensure input consistency it is intentionally carried over here until a new version can be trained
+        h_diff = max(0, im.size(dim=-2) - self.image_size[0])
+        w_diff = max(0, im.size(dim=-1) - self.image_size[1])
+        im = nn.functional.pad(
+            im, pad=(0, w_diff, 0, h_diff), mode="constant", value=0.0
+        )
         im = v2.CenterCrop(self.image_size)(im)
         im = v2.ToDtype(torch.float32, scale=True)(im)
 
